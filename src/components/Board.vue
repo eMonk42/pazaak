@@ -323,9 +323,21 @@ export default {
         } else if (this.cardsPlMi.indexOf(this.playerHand[index]) !== -1) {
           //console.log("plus-minuscard");
           //-----------------------------------------
-          let plus = confirm(
-            this.cardsPlMi.indexOf(this.playerHand[index]) + 1
-          );
+          // let plus = confirm(
+          //   this.cardsPlMi.indexOf(this.playerHand[index]) + 1
+          // );
+          //-----------------------------------------
+          swal.fire({
+            title: "<strong>This is a dualcard</strong>",
+            html: "<p>Wich side of the card do you want to play?</p>",
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Plus <i class="fas fa-plus"></i>',
+            cancelButtonText: 'Minus <i class="fas fa-minus"></i>',
+            confirmButtonAriaLabel: "Yes",
+            cancelButtonAriaLabel: "No",
+            width: "400px"
+          });
           console.log(plus);
           this.playerHand.splice(index, 1);
         }
