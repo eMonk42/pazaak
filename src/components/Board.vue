@@ -1,6 +1,6 @@
 <template>
   <div id="board-wrapper">
-    <h1>{{ isPlaying ? "true" : "false" }}</h1>
+    <!-- <h1>{{ isPlaying ? "true" : "false" }}</h1> -->
     <div id="score">
       <p>Games played: 2</p>
       <p><span>0</span>:<span>2</span></p>
@@ -11,20 +11,41 @@
         <div id="count-left" class="count">20</div>
         <div id="left-board" class="board">
           <div v-for="card of boardLength" :key="card" class="card">
-            <img :src="isPlaying ? cardsPlus[0] : emptyCard" alt="" />
+            <img :src="emptyCard" alt="" />
           </div>
         </div>
         <div id="left-player-hand" class="player-hand">
-          <div v-for="card of handSize" :key="card" class="card">
-            <img :src="isPlaying ? cardsPlus[0] : emptyCard" alt="" />
+          <div v-if="!handReady" class="handcards">
+            <div v-for="card of handSize" :key="card" class="card">
+              <img :src="handReady ? cardsPlus[0] : emptyCard" alt="" />
+            </div>
+          </div>
+          <div v-else class="handcards">
+            <div v-for="(card, index) of playerHand" :key="index" class="card">
+              <img :src="playerHand[index]" alt="" />
+            </div>
           </div>
         </div>
       </div>
       <div class="player-board" id="right-player">
         <div id="count-right" class="count">18</div>
-        <div id="right-board" class="board"></div>
-        <div id="right-player-hand" class="player-hand"></div>
+        <div id="right-board" class="board">
+          <div v-for="card of boardLength" :key="card" class="card">
+            <img :src="emptyCard" alt="" />
+          </div>
+        </div>
+        <div id="right-player-hand" class="player-hand">
+          <div class="handcards">
+            <div v-for="card of handSize" :key="card" class="card">
+              <img :src="!isPlaying ? emptyCard : cardHidden" alt="" />
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+    <div id="controls">
+      <button @click="nextRound">Pass</button>
+      <button @click="getHandCards(playerHand)">Hold</button>
     </div>
   </div>
 </template>
@@ -73,6 +94,11 @@ const cardHidden = hidden;
 const emptyCard = empty;
 const boardLength = 15;
 const handSize = 5;
+let playerHand = [];
+let computerHand = [];
+let playerCardsOnBoard = [];
+let computerCardsOnBoard = [];
+let handReady = false;
 export default {
   props: {
     isPlaying: Boolean
@@ -86,16 +112,54 @@ export default {
       cardHidden,
       boardLength,
       emptyCard,
-      handSize
+      handSize,
+      playerHand,
+      computerHand,
+      playerCardsOnBoard,
+      computerCardsOnBoard,
+      handReady
     };
   },
-  methods: {}
+  methods: {
+    getHandCards(array) {
+      array = [];
+      let allPossibleCards = this.cardsPlus
+        .concat(this.cardsMinus)
+        .concat(this.cardsPlMi);
+      for (let i = 0; i < this.handSize; i++) {
+        array.push(
+          allPossibleCards[
+            Math.round(Math.random() * (allPossibleCards.length - 1))
+          ]
+        );
+      }
+      this.playerHand = array;
+    },
+    nextRound() {
+      console.log("nextRound() here");
+    }
+  },
+  watch: {
+    isPlaying: function() {
+      if (!this.isPlaying) {
+        this.getHandCards(this.playerHand);
+        this.getHandCards(this.computerHand);
+        console.log("this.playerHand :", this.playerHand);
+        this.handReady = !this.handReady;
+      } else {
+        this.handReady = !this.handReady;
+      }
+    }
+  },
+  mounted() {
+    this.getHandCards(this.playerHand);
+    this.getHandCards(this.computerHand);
+  }
 };
 </script>
 <style scoped lang="scss">
 #board-wrapper {
   //border: 1px solid green;
-  height: 100px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -109,13 +173,18 @@ export default {
     width: 100%;
     padding: 1rem 0;
   }
+  #controls {
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid grey;
+    width: 50%;
+  }
   #table {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     .player-board {
       border: 1px solid teal;
-      height: 100px;
       .count {
         border: 1px solid magenta;
       }
@@ -137,15 +206,20 @@ export default {
       }
       .player-hand {
         border: 1px solid magenta;
-        min-height: 200px;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr;
+        display: flex;
         align-items: center;
-        .card {
-          //border: 1px solid gold;
-          display: flex;
-          justify-content: center;
+        min-height: 180px;
+        .handcards {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          grid-template-rows: 1fr;
+          align-items: center;
+          width: 100%;
+          .card {
+            //border: 1px solid gold;
+            display: flex;
+            justify-content: center;
+          }
         }
       }
     }
