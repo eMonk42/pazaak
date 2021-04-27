@@ -2,7 +2,7 @@
   <div id="main-wrapper">
     <h1 class="greeting">Hi, let's play Pazaak!</h1>
     <button v-if="!start" @click="play">Lets go!</button>
-    <button v-else @click="play">Restart Match</button>
+    <button v-else @click="play">Stop Match</button>
     <p class="instructions-link">Learn how to play</p>
     <Board :isPlaying="start" />
   </div>

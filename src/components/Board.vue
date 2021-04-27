@@ -17,7 +17,7 @@
         <div id="left-player-hand" class="player-hand">
           <div v-if="!handReady" class="handcards">
             <div v-for="card of handSize" :key="card" class="card">
-              <img :src="handReady ? cardsPlus[0] : emptyCard" alt="" />
+              <img :src="emptyCard" alt="" />
             </div>
           </div>
           <div v-else class="handcards">
@@ -35,9 +35,18 @@
           </div>
         </div>
         <div id="right-player-hand" class="player-hand">
-          <div class="handcards">
+          <div v-if="!handReady" class="handcards">
             <div v-for="card of handSize" :key="card" class="card">
-              <img :src="!isPlaying ? emptyCard : cardHidden" alt="" />
+              <img :src="emptyCard" alt="" />
+            </div>
+          </div>
+          <div v-else class="handcards">
+            <div
+              v-for="(card, index) of computerHand"
+              :key="index"
+              class="card"
+            >
+              <img :src="cardHidden" alt="" />
             </div>
           </div>
         </div>
@@ -45,7 +54,7 @@
     </div>
     <div id="controls">
       <button @click="nextRound">Pass</button>
-      <button @click="getHandCards(playerHand)">Hold</button>
+      <button @click="getHandCardsPlayer(playerHand)">Hold</button>
     </div>
   </div>
 </template>
@@ -121,7 +130,7 @@ export default {
     };
   },
   methods: {
-    getHandCards(array) {
+    getHandCardsPlayer(array) {
       array = [];
       let allPossibleCards = this.cardsPlus
         .concat(this.cardsMinus)
@@ -135,6 +144,20 @@ export default {
       }
       this.playerHand = array;
     },
+    getHandCardsComputer(array) {
+      array = [];
+      let allPossibleCards = this.cardsPlus
+        .concat(this.cardsMinus)
+        .concat(this.cardsPlMi);
+      for (let i = 0; i < this.handSize; i++) {
+        array.push(
+          allPossibleCards[
+            Math.round(Math.random() * (allPossibleCards.length - 1))
+          ]
+        );
+      }
+      this.computerHand = array;
+    },
     nextRound() {
       console.log("nextRound() here");
     }
@@ -142,9 +165,8 @@ export default {
   watch: {
     isPlaying: function() {
       if (!this.isPlaying) {
-        this.getHandCards(this.playerHand);
-        this.getHandCards(this.computerHand);
-        console.log("this.playerHand :", this.playerHand);
+        this.getHandCardsPlayer(this.playerHand);
+        this.getHandCardsComputer(this.computerHand);
         this.handReady = !this.handReady;
       } else {
         this.handReady = !this.handReady;
@@ -152,8 +174,8 @@ export default {
     }
   },
   mounted() {
-    this.getHandCards(this.playerHand);
-    this.getHandCards(this.computerHand);
+    this.getHandCardsPlayer(this.playerHand);
+    this.getHandCardsComputer(this.computerHand);
   }
 };
 </script>
@@ -199,9 +221,6 @@ export default {
           //border: 1px solid gold;
           display: flex;
           justify-content: center;
-          img {
-            //border: 1px solid green;
-          }
         }
       }
       .player-hand {
