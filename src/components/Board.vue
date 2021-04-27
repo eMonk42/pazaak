@@ -39,7 +39,7 @@
             </div>
           </div>
           <div v-else class="handcards">
-            <div v-for="(card, index) of playerHand" :key="index" class="card">
+            <div v-for="(card, index) of handSize" :key="index" class="card">
               <img
                 :src="playerHand[index] ? playerHand[index] : emptyCard"
                 alt=""
@@ -131,6 +131,8 @@ import hidden from "@/assets/cards/hidden.png";
 
 import empty from "@/assets/cards/empty.png";
 
+import Swal from "sweetalert2";
+
 const cardsPlus = [cp1, cp2, cp3, cp4, cp5, cp6];
 const cardsMinus = [cm1, cm2, cm3, cm4, cm5, cm6];
 const cardsPlMi = [cpm1, cpm2, cpm3, cpm4, cpm5, cpm6];
@@ -152,6 +154,7 @@ let gameCount = 0;
 let matchWinsPlayer = 0;
 let matchWinsComputer = 0;
 let buttonDisabled = true;
+const swal = Swal;
 export default {
   props: {
     isPlaying: Boolean
@@ -178,7 +181,8 @@ export default {
       gameCount,
       matchWinsPlayer,
       matchWinsComputer,
-      buttonDisabled
+      buttonDisabled,
+      swal
     };
   },
   methods: {
@@ -318,6 +322,7 @@ export default {
           this.playerHand.splice(index, 1);
         } else if (this.cardsPlMi.indexOf(this.playerHand[index]) !== -1) {
           //console.log("plus-minuscard");
+          //-----------------------------------------
           let plus = confirm(
             this.cardsPlMi.indexOf(this.playerHand[index]) + 1
           );
