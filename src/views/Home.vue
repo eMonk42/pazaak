@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hi, Home here</h1>
+    <!-- <h1>Hi, Home here</h1> -->
     <Board />
   </div>
 </template>
@@ -8,8 +8,8 @@
 import Board from "@/components/Board";
 export default {
   components: {
-    Board,
-  },
+    Board
+  }
 };
 </script>
 <style scoped lang="scss"></style>
