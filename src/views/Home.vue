@@ -4,7 +4,7 @@
     <button v-if="!start" @click="play">Lets go!</button>
     <button v-else @click="play">Stop Match</button>
     <p class="instructions-link">Learn how to play</p>
-    <Board :isPlaying="start" />
+    <Board :isPlaying="start" @game-over="play" />
   </div>
 </template>
 <script>

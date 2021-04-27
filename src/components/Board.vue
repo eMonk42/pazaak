@@ -2,18 +2,36 @@
   <div id="board-wrapper">
     <!-- <h1>{{ isPlaying ? "true" : "false" }}</h1> -->
     <div id="score">
-      <p>Games played: 2</p>
-      <p><span>0</span>:<span>2</span></p>
+      <p>Games played: {{ gameCount }}</p>
+      <p>
+        <span>{{ matchWinsPlayer }}</span
+        >:<span>{{ matchWinsComputer }}</span>
+      </p>
       <p>Opponent: Atton</p>
     </div>
     <div id="table">
       <div class="player-board" id="left-player">
-        <div id="count-left" class="count">20</div>
+        <div id="count-left" class="count">{{ countPointsPlayer }}</div>
         <div id="left-board" class="board">
-          <div v-for="card of boardLength" :key="card" class="card">
-            <img :src="emptyCard" alt="" />
+          <div v-if="!handReady" class="boardcards">
+            <div v-for="card of boardLength" :key="card" class="card">
+              <img :src="emptyCard" alt="" />
+            </div>
+          </div>
+          <div v-else class="boardcards">
+            <div v-for="(card, index) of boardLength" :key="index" class="card">
+              <img
+                :src="
+                  playerCardsOnBoard[index]
+                    ? playerCardsOnBoard[index]
+                    : emptyCard
+                "
+                alt=""
+              />
+            </div>
           </div>
         </div>
+
         <div id="left-player-hand" class="player-hand">
           <div v-if="!handReady" class="handcards">
             <div v-for="card of handSize" :key="card" class="card">
@@ -22,16 +40,34 @@
           </div>
           <div v-else class="handcards">
             <div v-for="(card, index) of playerHand" :key="index" class="card">
-              <img :src="playerHand[index]" alt="" />
+              <img
+                :src="playerHand[index] ? playerHand[index] : emptyCard"
+                alt=""
+                @click="playCard(index)"
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="player-board" id="right-player">
-        <div id="count-right" class="count">18</div>
+        <div id="count-right" class="count">{{ countPointsComputer }}</div>
         <div id="right-board" class="board">
-          <div v-for="card of boardLength" :key="card" class="card">
-            <img :src="emptyCard" alt="" />
+          <div v-if="!handReady" class="boardcards">
+            <div v-for="card of boardLength" :key="card" class="card">
+              <img :src="emptyCard" alt="" />
+            </div>
+          </div>
+          <div v-else class="boardcards">
+            <div v-for="(card, index) of boardLength" :key="index" class="card">
+              <img
+                :src="
+                  computerCardsOnBoard[index]
+                    ? computerCardsOnBoard[index]
+                    : emptyCard
+                "
+                alt=""
+              />
+            </div>
           </div>
         </div>
         <div id="right-player-hand" class="player-hand">
@@ -54,7 +90,7 @@
     </div>
     <div id="controls">
       <button @click="nextRound">Pass</button>
-      <button @click="getHandCardsPlayer(playerHand)">Hold</button>
+      <button @click="playerHolds">Hold</button>
     </div>
   </div>
 </template>
@@ -108,6 +144,14 @@ let computerHand = [];
 let playerCardsOnBoard = [];
 let computerCardsOnBoard = [];
 let handReady = false;
+let countPointsPlayer = 0;
+let countPointsComputer = 0;
+let playerIsHolding = false;
+let computerIsHolding = false;
+let gameCount = 0;
+let matchWinsPlayer = 0;
+let matchWinsComputer = 0;
+let buttonDisabled = true;
 export default {
   props: {
     isPlaying: Boolean
@@ -126,7 +170,15 @@ export default {
       computerHand,
       playerCardsOnBoard,
       computerCardsOnBoard,
-      handReady
+      handReady,
+      countPointsPlayer,
+      countPointsComputer,
+      playerIsHolding,
+      computerIsHolding,
+      gameCount,
+      matchWinsPlayer,
+      matchWinsComputer,
+      buttonDisabled
     };
   },
   methods: {
@@ -158,8 +210,121 @@ export default {
       }
       this.computerHand = array;
     },
+    checkWinCon() {
+      if (
+        this.countPointsPlayer === 20 &&
+        this.countPointsComputer === this.countPointsPlayer
+      ) {
+        setTimeout(() => {
+          alert("Draw!");
+          this.gameCount++;
+        }, 200);
+        setTimeout(() => {
+          this.$emit("game-over");
+        }, 1000);
+      } else if (this.countPointsPlayer > 20) {
+        setTimeout(() => {
+          this.matchWinsComputer++;
+          this.gameCount++;
+          alert("You lose!");
+        }, 200);
+        setTimeout(() => {
+          this.$emit("game-over");
+        }, 1000);
+      } else if (this.countPointsComputer > 20) {
+        setTimeout(() => {
+          this.matchWinsPlayer++;
+          this.gameCount++;
+          alert("You Win!");
+        }, 200);
+        setTimeout(() => {
+          this.$emit("game-over");
+        }, 1000);
+      }
+      // else {
+      //   console.log("also here also");
+      // }
+    },
+    computerTurn() {
+      if (!this.buttonDisabled) {
+        this.checkWinCon();
+        this.computerCardsOnBoard.push(
+          this.cardsNeu[Math.round(Math.random() * (this.cardsNeu.length - 1))]
+        );
+        this.countPointsComputer +=
+          this.cardsNeu.indexOf(
+            this.computerCardsOnBoard[this.computerCardsOnBoard.length - 1]
+          ) + 1;
+        this.checkWinCon();
+      }
+    },
+    playerTurn() {
+      if (!this.buttonDisabled) {
+        this.playerCardsOnBoard.push(
+          this.cardsNeu[Math.round(Math.random() * (this.cardsNeu.length - 1))]
+        );
+        this.countPointsPlayer +=
+          this.cardsNeu.indexOf(
+            this.playerCardsOnBoard[this.playerCardsOnBoard.length - 1]
+          ) + 1;
+      }
+    },
     nextRound() {
-      console.log("nextRound() here");
+      if (this.isPlaying) {
+        if (this.buttonDisabled) {
+          if (this.countPointsPlayer > 20) {
+            this.buttonDisabled = true;
+            this.matchWinsComputer++;
+            this.gameCount++;
+            alert("You lose!");
+            this.$emit("game-over");
+          } else {
+            this.buttonDisabled = false;
+          }
+          if (this.computerIsHolding === false) {
+            this.computerTurn();
+          }
+
+          if (this.playerIsHolding === false) {
+            setTimeout(() => {
+              this.playerTurn();
+              this.buttonDisabled = true;
+            }, 1000);
+          } else {
+            while (this.countPointsComputer < 20) {
+              this.computerTurn();
+            }
+          }
+        }
+      }
+    },
+    playerHolds() {
+      this.playerIsHolding = true;
+      this.nextRound();
+    },
+    playCard(index) {
+      if (this.buttonDisabled) {
+        this.playerCardsOnBoard.push(this.playerHand[index]);
+        if (this.cardsPlus.indexOf(this.playerHand[index]) !== -1) {
+          //console.log("pluscard");
+          this.countPointsPlayer +=
+            this.cardsPlus.indexOf(this.playerHand[index]) + 1;
+          this.playerHand.splice(index, 1);
+          console.log(this.playerHand.length);
+        } else if (this.cardsMinus.indexOf(this.playerHand[index]) !== -1) {
+          //console.log("minuscard");
+          this.countPointsPlayer -=
+            this.cardsMinus.indexOf(this.playerHand[index]) + 1;
+          this.playerHand.splice(index, 1);
+        } else if (this.cardsPlMi.indexOf(this.playerHand[index]) !== -1) {
+          //console.log("plus-minuscard");
+          let plus = confirm(
+            this.cardsPlMi.indexOf(this.playerHand[index]) + 1
+          );
+          console.log(plus);
+          this.playerHand.splice(index, 1);
+        }
+      }
     }
   },
   watch: {
@@ -170,6 +335,13 @@ export default {
         this.handReady = !this.handReady;
       } else {
         this.handReady = !this.handReady;
+        this.countPointsPlayer = 0;
+        this.countPointsComputer = 0;
+        this.playerCardsOnBoard = [];
+        this.computerCardsOnBoard = [];
+        this.playerIsHolding = false;
+        this.computerIsHolding = false;
+        this.buttonDisabled = true;
       }
     }
   },
@@ -206,21 +378,27 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     .player-board {
-      border: 1px solid teal;
+      //border: 1px solid teal;
+      #count-left {
+        text-align: end;
+      }
       .count {
-        border: 1px solid magenta;
+        padding: 0 1rem;
       }
       .board {
         border: 1px solid magenta;
         min-height: 500px;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        align-items: center;
-        .card {
-          //border: 1px solid gold;
-          display: flex;
-          justify-content: center;
+        .boardcards {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          grid-template-rows: 1fr 1fr 1fr;
+          align-items: center;
+          min-height: 500px;
+          .card {
+            display: flex;
+            justify-content: center;
+            //border: 1px solid gold;
+          }
         }
       }
       .player-hand {
