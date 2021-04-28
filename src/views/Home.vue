@@ -33,6 +33,7 @@ export default {
   .greeting {
     text-align: center;
     margin-bottom: 1rem;
+    font-size: 1.5rem;
   }
   .instructions-link {
     text-align: end;

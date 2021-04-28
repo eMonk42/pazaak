@@ -32,6 +32,7 @@
           </div>
         </div>
 
+        <p>Your Hand</p>
         <div id="left-player-hand" class="player-hand">
           <div v-if="!handReady" class="handcards">
             <div v-for="card of handSize" :key="card" class="card">
@@ -70,6 +71,7 @@
             </div>
           </div>
         </div>
+        <p>Opponent's Hand</p>
         <div id="right-player-hand" class="player-hand">
           <div v-if="!handReady" class="handcards">
             <div v-for="card of handSize" :key="card" class="card">
@@ -86,8 +88,15 @@
     </div>
     <div id="controls">
       <div class="buttons">
-        <button @click="nextRound">Pass</button>
-        <button @click="playerHolds">Hold</button>
+        <button @click="nextRound" :class="buttonDisabled ? '' : 'unclickable'">
+          Pass
+        </button>
+        <button
+          @click="playerHolds"
+          :class="buttonDisabled ? '' : 'unclickable'"
+        >
+          Hold
+        </button>
       </div>
       <div class="log">
         <p id="computer-log">Atton: Hello, my name is Atton</p>
@@ -228,8 +237,7 @@ export default {
       this.playerCardsOnBoard = [];
       this.computerCardsOnBoard = [];
       if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
-        document.getElementById("computer-log").innerText +=
-          "\nAtton: Good Game";
+        document.getElementById("computer-log").innerText = "Atton: Good Game";
         this.$emit("game-over");
         alert("You won the Match! \nIncredible! You rock!");
         this.gameCount = 0;
@@ -253,8 +261,7 @@ export default {
       this.computerCardsOnBoard = [];
       if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
         this.$emit("game-over");
-        document.getElementById("computer-log").innerText +=
-          "\nAtton: Good Game";
+        document.getElementById("computer-log").innerText = "Atton: Good Game";
         alert(
           "You lost the Match! \nDon't be sad! It's a very high variance-based one. Just keep trying!"
         );
@@ -276,7 +283,7 @@ export default {
       this.gameCount++;
       this.countPointsPlayer = 0;
       this.countPointsComputer = 0;
-      document.getElementById("computer-log").innerText += "\nAtton: Good Game";
+      document.getElementById("computer-log").innerText = "Atton: Good Game";
       //this.$emit("game-over");
       alert("Draw! What a game! Good luck in the next one!");
     },
@@ -326,8 +333,8 @@ export default {
         //--------------------- equal to 20 --------------------------------------
         if (this.countPointsComputer === 20) {
           this.computerIsHolding = true;
-          document.getElementById("computer-log").innerText +=
-            "\nAtton is holding";
+          document.getElementById("computer-log").innerText =
+            "Atton is holding";
           //------------------------ More than 20 ----------------------------
         } else if (this.countPointsComputer > 20) {
           this.computerHand.forEach((card, i) => {
@@ -342,9 +349,9 @@ export default {
               this.countPointsComputer -= this.cardsMinus.indexOf(card) + 1;
               this.computerHand.splice(i, 1);
               this.computerIsHolding = true;
-              document.getElementById("computer-log").innerText +=
-                "\nAtton plays a -" +
-                (this.cardsPlMi.indexOf(card) + 1) +
+              document.getElementById("computer-log").innerText =
+                "Atton plays a -" +
+                (this.cardsMinus.indexOf(card) + 1) +
                 " and holds.";
             } else if (
               this.cardsPlMi.indexOf(card) != -1 &&
@@ -357,8 +364,8 @@ export default {
               this.countPointsComputer -= this.cardsPlMi.indexOf(card) + 1;
               this.computerHand.splice(i, 1);
               this.computerIsHolding = true;
-              document.getElementById("computer-log").innerText +=
-                "\nAtton plays a +/- " +
+              document.getElementById("computer-log").innerText =
+                "Atton plays a +/- " +
                 (this.cardsPlMi.indexOf(card) + 1) +
                 " as a -" +
                 (this.cardsPlMi.indexOf(card) + 1) +
@@ -379,8 +386,8 @@ export default {
                 this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
                 //console.log(this.computerHand);
                 //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton plays a +" +
+                document.getElementById("computer-log").innerText =
+                  "Atton plays a +" +
                   (this.cardsPlus.indexOf(card) + 1) +
                   " and holds.";
                 this.computerHand.splice(i, 1);
@@ -397,8 +404,8 @@ export default {
                 this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
                 //console.log(this.computerHand);
                 //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton plays a +/- " +
+                document.getElementById("computer-log").innerText =
+                  "Atton plays a +/- " +
                   (this.cardsPlMi.indexOf(card) + 1) +
                   " as +" +
                   (this.cardsPlMi.indexOf(card) + 1) +
@@ -419,8 +426,7 @@ export default {
             this.countPointsComputer > this.countPointsPlayer
           ) {
             this.computerIsHolding = true;
-            document.getElementById("computer-log").innerText +=
-              "\nAtton: Nice!";
+            document.getElementById("computer-log").innerText = "Atton: Nice!";
           } else {
             this.computerHand.forEach((card, i) => {
               if (
@@ -433,8 +439,8 @@ export default {
                 this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
                 //console.log(this.computerHand);
                 //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton plays a +" +
+                document.getElementById("computer-log").innerText =
+                  "Atton plays a +" +
                   (this.cardsPlus.indexOf(card) + 1) +
                   " and holds.";
                 this.computerHand.splice(i, 1);
@@ -450,8 +456,8 @@ export default {
                 this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
                 //console.log(this.computerHand);
                 //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton plays a +/- " +
+                document.getElementById("computer-log").innerText =
+                  "Atton plays a +/- " +
                   (this.cardsPlMi.indexOf(card) + 1) +
                   " as +" +
                   (this.cardsPlMi.indexOf(card) + 1) +
@@ -464,17 +470,17 @@ export default {
             if (!this.cardPlayed) {
               if (this.countPointsComputer >= 17) {
                 this.computerIsHolding = true;
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton is holding";
+                document.getElementById("computer-log").innerText =
+                  "Atton is holding";
               } else {
-                document.getElementById("computer-log").innerText +=
-                  "\nAtton is passing";
+                document.getElementById("computer-log").innerText =
+                  "Atton is passing";
               }
             }
           }
         } else {
-          document.getElementById("computer-log").innerText +=
-            "\nAtton is passing";
+          document.getElementById("computer-log").innerText =
+            "Atton is passing";
         }
         //-------------------------------------------------
         this.cardPlayed = false;
@@ -577,7 +583,8 @@ export default {
               cancelButtonText: 'Minus <i class="fas fa-minus"></i>',
               confirmButtonAriaLabel: "Yes",
               cancelButtonAriaLabel: "No",
-              width: "400px"
+              width: "400px",
+              background: "#1b1b1b"
             })
             .then(result => {
               if (result.isConfirmed) {
@@ -630,35 +637,39 @@ export default {
 </script>
 <style scoped lang="scss">
 #board-wrapper {
+  border-bottom: 1px solid #444;
   //border: 1px solid green;
   display: flex;
   flex-direction: column;
   width: 100%;
   #score {
+    border: 1px solid #444;
     justify-self: center;
     align-self: center;
-    border: 1px solid gold;
+    //border: 1px solid gold;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     width: 100%;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
+    background-color: #1a1a1a;
   }
   #controls {
     display: flex;
     justify-content: space-evenly;
-    border: 1px solid grey;
+    //border: 1px solid grey;
+    background-color: #151515;
     .buttons {
+      border: 1px solid #444;
       display: flex;
       justify-content: space-evenly;
       width: 50%;
-      padding-top: 0.5rem;
-      button {
-        max-height: 1.5rem;
-      }
+      padding: 0.5rem 0;
     }
     .log {
+      border: 1px solid #444;
       width: 50%;
+      padding: 0.5rem;
       #computer-log {
         overflow: auto;
         min-height: 2rem;
@@ -670,15 +681,19 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     .player-board {
+      border-right: 1px solid #444;
+      border-left: 1px solid #444;
       //border: 1px solid teal;
       #count-left {
         text-align: end;
       }
       .count {
         padding: 0 1rem;
+        background-color: #151515;
+        border-bottom: 1px solid #444;
       }
       .board {
-        border: 1px solid magenta;
+        //border: 1px solid magenta;
         min-height: 500px;
         .boardcards {
           display: grid;
@@ -693,11 +708,18 @@ export default {
           }
         }
       }
+      p {
+        text-align: center;
+        border-top: 1px solid #444;
+        background-color: #151515;
+      }
       .player-hand {
-        border: 1px solid magenta;
+        //border: 1px solid magenta;
         display: flex;
         align-items: center;
         min-height: 180px;
+        background-color: #1a1a1a;
+        border-top: 1px solid #444;
         .handcards {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -716,28 +738,18 @@ export default {
 }
 @media (max-width: 1650px) {
   #board-wrapper {
-    #score {
-    }
-    #controls {
-    }
     #table {
       .player-board {
         .board {
-          border: 1px solid green;
           .boardcards {
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr 1fr;
-            .card {
-            }
           }
         }
         .player-hand {
-          border: 1px solid teal;
           .handcards {
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: 1fr;
-            .card {
-            }
           }
         }
       }
@@ -746,23 +758,15 @@ export default {
 }
 @media (max-width: 1100px) {
   #board-wrapper {
-    #score {
-    }
-    #controls {
-    }
     #table {
       .player-board {
         .board {
-          border: 1px solid green;
           .boardcards {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr 1fr;
-            .card {
-            }
           }
         }
         .player-hand {
-          border: 1px solid teal;
           .handcards {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 1fr;
@@ -777,15 +781,10 @@ export default {
 }
 @media (max-width: 640px) {
   #board-wrapper {
-    #score {
-    }
-    #controls {
-    }
     #table {
       .player-board {
         .board {
           min-height: 100px;
-          border: 1px solid green;
           .boardcards {
             min-height: 100px;
             grid-template-columns: 1fr 1fr 1fr;
@@ -798,7 +797,6 @@ export default {
           }
         }
         .player-hand {
-          border: 1px solid teal;
           .handcards {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 120px 120px;
@@ -817,15 +815,10 @@ export default {
 }
 @media (max-width: 520px) {
   #board-wrapper {
-    #score {
-    }
-    #controls {
-    }
     #table {
       .player-board {
         .board {
           min-height: 100px;
-          border: 1px solid green;
           .boardcards {
             min-height: 100px;
             grid-template-columns: 1fr 1fr 1fr;
@@ -838,7 +831,6 @@ export default {
           }
         }
         .player-hand {
-          border: 1px solid teal;
           .handcards {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 120px 120px;
@@ -857,15 +849,10 @@ export default {
 }
 @media (max-width: 480px) {
   #board-wrapper {
-    #score {
-    }
-    #controls {
-    }
     #table {
       .player-board {
         .board {
           min-height: 100px;
-          border: 1px solid green;
           .boardcards {
             min-height: 100px;
             grid-template-columns: 1fr 1fr 1fr;
@@ -878,7 +865,6 @@ export default {
           }
         }
         .player-hand {
-          border: 1px solid teal;
           .handcards {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 100px 100px;
