@@ -89,8 +89,13 @@
       </div>
     </div>
     <div id="controls">
-      <button @click="nextRound">Pass</button>
-      <button @click="playerHolds">Hold</button>
+      <div class="buttons">
+        <button @click="nextRound">Pass</button>
+        <button @click="playerHolds">Hold</button>
+      </div>
+      <div class="log">
+        <p id="computer-log">Hello, my name is Atton</p>
+      </div>
     </div>
   </div>
 </template>
@@ -214,44 +219,72 @@ export default {
       }
       this.computerHand = array;
     },
+    win() {
+      this.computerIsHolding = false;
+      this.playerIsHolding = false;
+      this.buttonDisabled = true;
+      this.matchWinsPlayer++;
+      this.gameCount++;
+      this.countPointsPlayer = 0;
+      this.countPointsComputer = 0;
+      document.getElementById("computer-log").innerText = "Atton: Good Game";
+      this.$emit("game-over");
+      alert("You win!");
+    },
+    lose() {
+      this.computerIsHolding = false;
+      this.playerIsHolding = false;
+      this.buttonDisabled = true;
+      this.matchWinsComputer++;
+      this.gameCount++;
+      this.countPointsPlayer = 0;
+      this.countPointsComputer = 0;
+      document.getElementById("computer-log").innerText = "Atton: Good Game";
+      this.$emit("game-over");
+      alert("You lose!");
+    },
+    draw() {
+      this.computerIsHolding = false;
+      this.playerIsHolding = false;
+      this.buttonDisabled = true;
+      this.gameCount++;
+      this.countPointsPlayer = 0;
+      this.countPointsComputer = 0;
+      document.getElementById("computer-log").innerText = "Atton: Good Game";
+      this.$emit("game-over");
+      alert("Draw!");
+    },
     checkWinCon() {
-      if (
-        this.countPointsPlayer === 20 &&
-        this.countPointsComputer === this.countPointsPlayer
-      ) {
-        setTimeout(() => {
-          alert("Draw!");
-          this.gameCount++;
-        }, 200);
-        setTimeout(() => {
-          this.$emit("game-over");
-        }, 1000);
-      } else if (this.countPointsPlayer > 20) {
-        setTimeout(() => {
-          this.matchWinsComputer++;
-          this.gameCount++;
-          alert("You lose!");
-        }, 200);
-        setTimeout(() => {
-          this.$emit("game-over");
-        }, 1000);
+      //console.log("checkWinCon here");
+      if (this.computerIsHolding && this.playerIsHolding) {
+        if (
+          this.countPointsPlayer === this.countPointsComputer &&
+          this.countPointsComputer <= 20
+        ) {
+          this.draw();
+        } else if (
+          this.countPointsComputer > this.countPointsPlayer &&
+          this.countPointsComputer <= 20
+        ) {
+          this.lose();
+        } else if (
+          this.countPointsComputer < this.countPointsPlayer &&
+          this.countPointsPlayer <= 20
+        ) {
+          this.win();
+        } else if (this.playerIsHolding && this.countPointsComputer > 20) {
+          this.win();
+        }
       } else if (this.countPointsComputer > 20) {
-        setTimeout(() => {
-          this.matchWinsPlayer++;
-          this.gameCount++;
-          alert("You Win!");
-        }, 200);
-        setTimeout(() => {
-          this.$emit("game-over");
-        }, 1000);
+        this.win();
+      } else if (this.countPointsPlayer > 20) {
+        this.lose();
       }
-      // else {
-      //   console.log("also here also");
-      // }
     },
     computerTurn() {
+      //console.log("computerturn here");
       if (!this.buttonDisabled) {
-        this.checkWinCon();
+        //this.checkWinCon();
         this.computerCardsOnBoard.push(
           this.cardsNeu[Math.round(Math.random() * (this.cardsNeu.length - 1))]
         );
@@ -259,11 +292,44 @@ export default {
           this.cardsNeu.indexOf(
             this.computerCardsOnBoard[this.computerCardsOnBoard.length - 1]
           ) + 1;
-        this.checkWinCon();
+        //------------------------
+        if (this.countPointsComputer === 20) {
+          this.computerIsHolding = true;
+          document.getElementById("computer-log").innerText =
+            "Atton is holding";
+        } else if (
+          this.countPointsComputer < 20 &&
+          this.countPointsComputer > 13
+        ) {
+          if (this.countPointsComputer > 16) {
+            this.computerIsHolding = true;
+            document.getElementById("computer-log").innerText =
+              "Atton is holding";
+          }
+        } else if (this.countPointsComputer > 20) {
+          this.computerIsHolding = true;
+          document.getElementById("computer-log").innerText =
+            "Atton: Good Game";
+        } else if (
+          this.playerIsHolding &&
+          this.countPointsComputer > this.countPointsPlayer &&
+          this.countPointsComputer <= 20
+        ) {
+          this.computerIsHolding = true;
+        } else {
+          document.getElementById("computer-log").innerText =
+            "Atton is passing";
+        }
+        //------------------------
+        setTimeout(() => {
+          this.checkWinCon();
+        }, 1000);
       }
     },
     playerTurn() {
-      if (!this.buttonDisabled) {
+      //console.log("got here");
+      setTimeout(() => {
+        //console.log("playerturn here");
         this.playerCardsOnBoard.push(
           this.cardsNeu[Math.round(Math.random() * (this.cardsNeu.length - 1))]
         );
@@ -271,75 +337,105 @@ export default {
           this.cardsNeu.indexOf(
             this.playerCardsOnBoard[this.playerCardsOnBoard.length - 1]
           ) + 1;
-      }
+        this.buttonDisabled = true;
+      }, 1000);
     },
     nextRound() {
       if (this.isPlaying) {
         if (this.buttonDisabled) {
-          if (this.countPointsPlayer > 20) {
-            this.buttonDisabled = true;
-            this.matchWinsComputer++;
-            this.gameCount++;
-            alert("You lose!");
-            this.$emit("game-over");
-          } else {
-            this.buttonDisabled = false;
-          }
+          this.buttonDisabled = false;
+          this.checkWinCon();
+          //console.log("nextRound here");
           if (this.computerIsHolding === false) {
             this.computerTurn();
           }
-
           if (this.playerIsHolding === false) {
-            setTimeout(() => {
-              this.playerTurn();
-              this.buttonDisabled = true;
-            }, 1000);
-          } else {
-            while (this.countPointsComputer < 20) {
-              this.computerTurn();
-            }
+            this.playerTurn();
+            //this.buttonDisabled = true;
           }
         }
       }
     },
     playerHolds() {
       this.playerIsHolding = true;
-      this.nextRound();
+      this.buttonDisabled = false;
+      this.checkWinCon();
+      if (this.playerIsHolding) {
+        setTimeout(() => {
+          if (this.playerIsHolding) {
+            //console.log("round 1");
+            this.computerTurn();
+          }
+          if (this.playerIsHolding) {
+            setTimeout(() => {
+              if (this.playerIsHolding) {
+                //console.log("round 2");
+                this.checkWinCon();
+                this.computerTurn();
+              }
+              if (this.playerIsHolding) {
+                setTimeout(() => {
+                  if (this.playerIsHolding) {
+                    //console.log("round 3");
+                    this.checkWinCon();
+                    this.computerTurn();
+                  }
+                  if (this.playerIsHolding) {
+                    setTimeout(() => {
+                      //console.log("round 4");
+                      this.checkWinCon();
+                      this.computerTurn();
+                      this.computerIsHolding = true;
+                      this.checkWinCon();
+                    }, 1000);
+                  }
+                }, 1000);
+              }
+            }, 1000);
+          }
+        }, 1000);
+      }
     },
     playCard(index) {
       if (this.buttonDisabled) {
-        this.playerCardsOnBoard.push(this.playerHand[index]);
         if (this.cardsPlus.indexOf(this.playerHand[index]) !== -1) {
-          //console.log("pluscard");
+          this.playerCardsOnBoard.push(this.playerHand[index]);
           this.countPointsPlayer +=
             this.cardsPlus.indexOf(this.playerHand[index]) + 1;
           this.playerHand.splice(index, 1);
-          console.log(this.playerHand.length);
         } else if (this.cardsMinus.indexOf(this.playerHand[index]) !== -1) {
-          //console.log("minuscard");
+          this.playerCardsOnBoard.push(this.playerHand[index]);
           this.countPointsPlayer -=
             this.cardsMinus.indexOf(this.playerHand[index]) + 1;
           this.playerHand.splice(index, 1);
         } else if (this.cardsPlMi.indexOf(this.playerHand[index]) !== -1) {
-          //console.log("plus-minuscard");
-          //-----------------------------------------
-          // let plus = confirm(
-          //   this.cardsPlMi.indexOf(this.playerHand[index]) + 1
-          // );
-          //-----------------------------------------
-          swal.fire({
-            title: "<strong>This is a dualcard</strong>",
-            html: "<p>Wich side of the card do you want to play?</p>",
-            showCancelButton: true,
-            focusConfirm: false,
-            confirmButtonText: 'Plus <i class="fas fa-plus"></i>',
-            cancelButtonText: 'Minus <i class="fas fa-minus"></i>',
-            confirmButtonAriaLabel: "Yes",
-            cancelButtonAriaLabel: "No",
-            width: "400px"
-          });
-          console.log(plus);
-          this.playerHand.splice(index, 1);
+          swal
+            .fire({
+              title: "<strong>This is a dualcard</strong>",
+              html: "<p>Wich side of the card do you want to play?</p>",
+              showCancelButton: true,
+              focusConfirm: false,
+              confirmButtonText: 'Plus <i class="fas fa-plus"></i>',
+              cancelButtonText: 'Minus <i class="fas fa-minus"></i>',
+              confirmButtonAriaLabel: "Yes",
+              cancelButtonAriaLabel: "No",
+              width: "400px"
+            })
+            .then(result => {
+              if (result.isConfirmed) {
+                //console.log("true", result.isConfirmed);
+                this.countPointsPlayer +=
+                  this.cardsPlMi.indexOf(this.playerHand[index]) + 1;
+                this.playerCardsOnBoard.push(this.playerHand[index]);
+                this.playerHand.splice(index, 1);
+              } else {
+                //console.log("false", result.isDenied);
+                this.countPointsPlayer -=
+                  this.cardsPlMi.indexOf(this.playerHand[index]) + 1;
+                this.playerCardsOnBoard.push(this.playerHand[index]);
+                this.playerHand.splice(index, 1);
+              }
+            });
         }
       }
     }
@@ -388,7 +484,14 @@ export default {
     display: flex;
     justify-content: space-evenly;
     border: 1px solid grey;
-    width: 50%;
+    .buttons {
+      display: flex;
+      justify-content: space-evenly;
+      width: 50%;
+    }
+    .log {
+      width: 50%;
+    }
   }
   #table {
     display: grid;
