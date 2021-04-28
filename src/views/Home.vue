@@ -42,4 +42,9 @@ export default {
     margin: 0 auto;
   }
 }
+@media (max-width: 1650px) {
+  #main-wrapper {
+    width: 100%;
+  }
+}
 </style>

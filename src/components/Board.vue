@@ -77,12 +77,8 @@
             </div>
           </div>
           <div v-else class="handcards">
-            <div
-              v-for="(card, index) of computerHand"
-              :key="index"
-              class="card"
-            >
-              <img :src="cardHidden" alt="" />
+            <div v-for="(card, index) of handSize" :key="index" class="card">
+              <img :src="computerHand[index] ? cardHidden : emptyCard" alt="" />
             </div>
           </div>
         </div>
@@ -94,7 +90,7 @@
         <button @click="playerHolds">Hold</button>
       </div>
       <div class="log">
-        <p id="computer-log">Hello, my name is Atton</p>
+        <p id="computer-log">Atton: Hello, my name is Atton</p>
       </div>
     </div>
   </div>
@@ -160,6 +156,7 @@ let matchWinsPlayer = 0;
 let matchWinsComputer = 0;
 let buttonDisabled = true;
 const swal = Swal;
+let cardPlayed = false;
 export default {
   props: {
     isPlaying: Boolean
@@ -187,7 +184,8 @@ export default {
       matchWinsPlayer,
       matchWinsComputer,
       buttonDisabled,
-      swal
+      swal,
+      cardPlayed
     };
   },
   methods: {
@@ -227,9 +225,21 @@ export default {
       this.gameCount++;
       this.countPointsPlayer = 0;
       this.countPointsComputer = 0;
-      document.getElementById("computer-log").innerText = "Atton: Good Game";
-      this.$emit("game-over");
-      alert("You win!");
+      this.playerCardsOnBoard = [];
+      this.computerCardsOnBoard = [];
+      if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
+        document.getElementById("computer-log").innerText +=
+          "\nAtton: Good Game";
+        this.$emit("game-over");
+        alert("You won the Match! \nIncredible! You rock!");
+        this.gameCount = 0;
+        this.matchWinsComputer = 0;
+        this.matchWinsPlayer = 0;
+      } else {
+        alert(
+          "You won this game! \nWe are playing Bo3 tho, so keep your concentration up!"
+        );
+      }
     },
     lose() {
       this.computerIsHolding = false;
@@ -239,20 +249,36 @@ export default {
       this.gameCount++;
       this.countPointsPlayer = 0;
       this.countPointsComputer = 0;
-      document.getElementById("computer-log").innerText = "Atton: Good Game";
-      this.$emit("game-over");
-      alert("You lose!");
+      this.playerCardsOnBoard = [];
+      this.computerCardsOnBoard = [];
+      if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
+        this.$emit("game-over");
+        document.getElementById("computer-log").innerText +=
+          "\nAtton: Good Game";
+        alert(
+          "You lost the Match! \nDon't be sad! It's a very high variance-based one. Just keep trying!"
+        );
+        this.gameCount = 0;
+        this.matchWinsComputer = 0;
+        this.matchWinsPlayer = 0;
+      } else {
+        alert(
+          "You lost this game! \nWe are playing Bo3 so don't give up just now!"
+        );
+      }
     },
     draw() {
       this.computerIsHolding = false;
       this.playerIsHolding = false;
       this.buttonDisabled = true;
+      this.playerCardsOnBoard = [];
+      this.computerCardsOnBoard = [];
       this.gameCount++;
       this.countPointsPlayer = 0;
       this.countPointsComputer = 0;
-      document.getElementById("computer-log").innerText = "Atton: Good Game";
-      this.$emit("game-over");
-      alert("Draw!");
+      document.getElementById("computer-log").innerText += "\nAtton: Good Game";
+      //this.$emit("game-over");
+      alert("Draw! What a game! Good luck in the next one!");
     },
     checkWinCon() {
       //console.log("checkWinCon here");
@@ -262,6 +288,11 @@ export default {
           this.countPointsComputer <= 20
         ) {
           this.draw();
+        } else if (
+          this.countPointsComputer == 20 &&
+          this.countPointsComputer != this.countPointsPlayer
+        ) {
+          this.lose();
         } else if (
           this.countPointsComputer > this.countPointsPlayer &&
           this.countPointsComputer <= 20
@@ -292,35 +323,162 @@ export default {
           this.cardsNeu.indexOf(
             this.computerCardsOnBoard[this.computerCardsOnBoard.length - 1]
           ) + 1;
-        //------------------------
+        //--------------------- equal to 20 --------------------------------------
         if (this.countPointsComputer === 20) {
           this.computerIsHolding = true;
-          document.getElementById("computer-log").innerText =
-            "Atton is holding";
+          document.getElementById("computer-log").innerText +=
+            "\nAtton is holding";
+          //------------------------ More than 20 ----------------------------
+        } else if (this.countPointsComputer > 20) {
+          this.computerHand.forEach((card, i) => {
+            if (
+              this.cardsMinus.indexOf(card) != -1 &&
+              -(this.cardsMinus.indexOf(card) + 1) + this.countPointsComputer <=
+                20 &&
+              !this.cardPlayed
+            ) {
+              this.computerCardsOnBoard.push(card);
+              this.cardPlayed = true;
+              this.countPointsComputer -= this.cardsMinus.indexOf(card) + 1;
+              this.computerHand.splice(i, 1);
+              this.computerIsHolding = true;
+              document.getElementById("computer-log").innerText +=
+                "\nAtton plays a -" +
+                (this.cardsPlMi.indexOf(card) + 1) +
+                " and holds.";
+            } else if (
+              this.cardsPlMi.indexOf(card) != -1 &&
+              -(this.cardsPlMi.indexOf(card) + 1) + this.countPointsComputer <=
+                20 &&
+              !this.cardPlayed
+            ) {
+              this.computerCardsOnBoard.push(card);
+              this.cardPlayed = true;
+              this.countPointsComputer -= this.cardsPlMi.indexOf(card) + 1;
+              this.computerHand.splice(i, 1);
+              this.computerIsHolding = true;
+              document.getElementById("computer-log").innerText +=
+                "\nAtton plays a +/- " +
+                (this.cardsPlMi.indexOf(card) + 1) +
+                " as a -" +
+                (this.cardsPlMi.indexOf(card) + 1) +
+                " and holds.";
+            }
+          });
+          //check if a small positive card can do it
+          if (this.countPointsComputer != 20 && this.computerHand.length > 0) {
+            this.computerHand.forEach((card, i) => {
+              if (
+                this.cardsPlus.indexOf(card) != -1 &&
+                this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer <=
+                  20 &&
+                this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer >
+                  this.countPointsPlayer
+              ) {
+                this.computerCardsOnBoard.push(card);
+                this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
+                //console.log(this.computerHand);
+                //console.log(card, this.countPointsComputer);
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton plays a +" +
+                  (this.cardsPlus.indexOf(card) + 1) +
+                  " and holds.";
+                this.computerHand.splice(i, 1);
+                this.computerIsHolding = true;
+                this.cardPlayed = true;
+              } else if (
+                this.cardsPlMi.indexOf(card) != -1 &&
+                this.cardsPlMi.indexOf(card) + 1 + this.countPointsComputer <=
+                  20 &&
+                this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer >
+                  this.countPointsPlayer
+              ) {
+                this.computerCardsOnBoard.push(card);
+                this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
+                //console.log(this.computerHand);
+                //console.log(card, this.countPointsComputer);
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton plays a +/- " +
+                  (this.cardsPlMi.indexOf(card) + 1) +
+                  " as +" +
+                  (this.cardsPlMi.indexOf(card) + 1) +
+                  " and holds.";
+                this.computerHand.splice(i, 1);
+                this.computerIsHolding = true;
+                this.cardPlayed = true;
+              }
+            });
+          }
+          //------------------------- Less than 20 and bigger than 10 --------------------------
         } else if (
           this.countPointsComputer < 20 &&
-          this.countPointsComputer > 13
+          this.countPointsComputer >= 10
         ) {
-          if (this.countPointsComputer > 16) {
+          if (
+            this.playerIsHolding &&
+            this.countPointsComputer > this.countPointsPlayer
+          ) {
             this.computerIsHolding = true;
-            document.getElementById("computer-log").innerText =
-              "Atton is holding";
+            document.getElementById("computer-log").innerText +=
+              "\nAtton: Nice!";
+          } else {
+            this.computerHand.forEach((card, i) => {
+              if (
+                this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer ==
+                  20 &&
+                !this.cardPLayed &&
+                this.cardsPlus.indexOf(card) !== -1
+              ) {
+                this.computerCardsOnBoard.push(card);
+                this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
+                //console.log(this.computerHand);
+                //console.log(card, this.countPointsComputer);
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton plays a +" +
+                  (this.cardsPlus.indexOf(card) + 1) +
+                  " and holds.";
+                this.computerHand.splice(i, 1);
+                this.computerIsHolding = true;
+                this.cardPlayed = true;
+              } else if (
+                this.cardsPlMi.indexOf(card) + 1 + this.countPointsComputer ==
+                  20 &&
+                !this.cardPlayed &&
+                this.cardsPlMi.indexOf(card) !== -1
+              ) {
+                this.computerCardsOnBoard.push(card);
+                this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
+                //console.log(this.computerHand);
+                //console.log(card, this.countPointsComputer);
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton plays a +/- " +
+                  (this.cardsPlMi.indexOf(card) + 1) +
+                  " as +" +
+                  (this.cardsPlMi.indexOf(card) + 1) +
+                  " and holds.";
+                this.computerHand.splice(i, 1);
+                this.computerIsHolding = true;
+                this.cardPlayed = true;
+              }
+            });
+            if (!this.cardPlayed) {
+              if (this.countPointsComputer >= 17) {
+                this.computerIsHolding = true;
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton is holding";
+              } else {
+                document.getElementById("computer-log").innerText +=
+                  "\nAtton is passing";
+              }
+            }
           }
-        } else if (this.countPointsComputer > 20) {
-          this.computerIsHolding = true;
-          document.getElementById("computer-log").innerText =
-            "Atton: Good Game";
-        } else if (
-          this.playerIsHolding &&
-          this.countPointsComputer > this.countPointsPlayer &&
-          this.countPointsComputer <= 20
-        ) {
-          this.computerIsHolding = true;
         } else {
-          document.getElementById("computer-log").innerText =
-            "Atton is passing";
+          document.getElementById("computer-log").innerText +=
+            "\nAtton is passing";
         }
-        //------------------------
+        //-------------------------------------------------
+        this.cardPlayed = false;
+        //-------------------------------------------------
         setTimeout(() => {
           this.checkWinCon();
         }, 1000);
@@ -446,6 +604,8 @@ export default {
         this.getHandCardsPlayer(this.playerHand);
         this.getHandCardsComputer(this.computerHand);
         this.handReady = !this.handReady;
+        document.getElementById("computer-log").innerText =
+          "Thanks for playing!";
       } else {
         this.handReady = !this.handReady;
         this.countPointsPlayer = 0;
@@ -455,12 +615,16 @@ export default {
         this.playerIsHolding = false;
         this.computerIsHolding = false;
         this.buttonDisabled = true;
+        document.getElementById("computer-log").innerText = "Atton: Let's go!";
       }
     }
   },
   mounted() {
     this.getHandCardsPlayer(this.playerHand);
     this.getHandCardsComputer(this.computerHand);
+    if (window.innerWidth < 1101) {
+      this.boardLength = 9;
+    }
   }
 };
 </script>
@@ -488,9 +652,17 @@ export default {
       display: flex;
       justify-content: space-evenly;
       width: 50%;
+      padding-top: 0.5rem;
+      button {
+        max-height: 1.5rem;
+      }
     }
     .log {
       width: 50%;
+      #computer-log {
+        overflow: auto;
+        min-height: 2rem;
+      }
     }
   }
   #table {
@@ -536,6 +708,187 @@ export default {
             //border: 1px solid gold;
             display: flex;
             justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 1650px) {
+  #board-wrapper {
+    #score {
+    }
+    #controls {
+    }
+    #table {
+      .player-board {
+        .board {
+          border: 1px solid green;
+          .boardcards {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            .card {
+            }
+          }
+        }
+        .player-hand {
+          border: 1px solid teal;
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr;
+            .card {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 1100px) {
+  #board-wrapper {
+    #score {
+    }
+    #controls {
+    }
+    #table {
+      .player-board {
+        .board {
+          border: 1px solid green;
+          .boardcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            .card {
+            }
+          }
+        }
+        .player-hand {
+          border: 1px solid teal;
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr;
+            .card {
+              padding: 1rem 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 640px) {
+  #board-wrapper {
+    #score {
+    }
+    #controls {
+    }
+    #table {
+      .player-board {
+        .board {
+          min-height: 100px;
+          border: 1px solid green;
+          .boardcards {
+            min-height: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 120px 120px 120px;
+            .card {
+              img {
+                max-width: 80px;
+              }
+            }
+          }
+        }
+        .player-hand {
+          border: 1px solid teal;
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 120px 120px;
+            //justify-content: space-around;
+            .card {
+              //padding: 1rem 0;
+              img {
+                max-width: 80px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 520px) {
+  #board-wrapper {
+    #score {
+    }
+    #controls {
+    }
+    #table {
+      .player-board {
+        .board {
+          min-height: 100px;
+          border: 1px solid green;
+          .boardcards {
+            min-height: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 120px 120px 120px;
+            .card {
+              img {
+                max-width: 70px;
+              }
+            }
+          }
+        }
+        .player-hand {
+          border: 1px solid teal;
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 120px 120px;
+            //justify-content: space-around;
+            .card {
+              //padding: 1rem 0;
+              img {
+                max-width: 70px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 480px) {
+  #board-wrapper {
+    #score {
+    }
+    #controls {
+    }
+    #table {
+      .player-board {
+        .board {
+          min-height: 100px;
+          border: 1px solid green;
+          .boardcards {
+            min-height: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 100px 100px 100px;
+            .card {
+              img {
+                max-width: 60px;
+              }
+            }
+          }
+        }
+        .player-hand {
+          border: 1px solid teal;
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 100px 100px;
+            //justify-content: space-around;
+            .card {
+              //padding: 1rem 0;
+              img {
+                max-width: 60px;
+              }
+            }
           }
         }
       }
