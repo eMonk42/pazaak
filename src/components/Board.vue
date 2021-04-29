@@ -264,7 +264,8 @@ export default {
       } else {
         swal.fire({
           title: "You won this game!",
-          text: "We are playing Bo3 tho, so keep your concentration up!",
+          text:
+            "You are playing best of threee tho, so keep your concentration up!",
           width: "400px",
           background: "#1b1b1b",
           showConfirmButton: true,
@@ -289,7 +290,7 @@ export default {
           .fire({
             title: "You lost the Match!",
             text:
-              "Don't be sad! It's a very high variance-based one. Just keep trying! Do you want to try again?",
+              "Don't be sad! It's a very high variance-based game. Just keep trying! Do you want to try again?",
             width: "400px",
             background: "#1b1b1b",
             showConfirmButton: true,
@@ -309,7 +310,7 @@ export default {
       } else {
         swal.fire({
           title: "You lost this game!",
-          text: "We are playing Bo3 so don't give up just now!",
+          text: "You are playing best of three tho, so don't give up just now!",
           width: "400px",
           background: "#1b1b1b",
           showConfirmButton: true,

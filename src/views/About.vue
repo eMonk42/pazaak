@@ -49,6 +49,13 @@
         random cards and there only will be turn of the opponent left until the
         opponent holds too or gets above 20.
       </p>
+      <h4>Dualards</h4>
+      <p>
+        Dualcards are marked with a minus as well as a plus sign. When played
+        the player has to deside which version of the card shall be entering the
+        board. A +/- 2 for instance can be played either as a +2 or as a -2 just
+        as needed adding more variety to the game.
+      </p>
       <h3 id="tipps">Tipps for beginners</h3>
       <p>
         If you are totally new to the game and don't have a clue about it there
@@ -66,6 +73,12 @@
         Keep in mind, that you not only have to keep your count below 20 but
         also above your opponents count too! So keep an eye on what your
         opponents count is at.
+      </p>
+      <p>
+        Also in this version you are playing best of three, wich means that the
+        first player that wins two games wins the match. You only get new
+        handcards with the beginning of a new match so don't spend all of them
+        in the first game/s!
       </p>
       <h3>Draw</h3>
       <p>
