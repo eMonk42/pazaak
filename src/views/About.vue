@@ -8,7 +8,14 @@
         Wars: Knights of the old Republic'.
       </p>
       <p>
-        Here is a version for Webbrowsers created using Vue. The creators humble
+        So the way how the game works is copied from there. If you still have
+        suggestions for improvements feel free to write me
+        <a id="git-link" href="https://github.com/eMonk42" target="_blank"
+          >on GitHub</a
+        >.
+      </p>
+      <p>
+        This is a version for Webbrowsers created using Vue. The creators humble
         wish is for players to have much fun with it!
       </p>
       <h2>How to play</h2>
@@ -96,6 +103,17 @@ export default {};
     p {
       padding-left: 0.5rem;
       padding-top: 0.5rem;
+      #git-link {
+        display: inline;
+        margin: 0;
+        color: #ddd;
+        border: none;
+        border-radius: none;
+        padding: 0;
+      }
+      #git-link:hover {
+        background-color: initial;
+      }
     }
     h2 {
       padding-top: 1rem;
