@@ -291,29 +291,27 @@ export default {
       alert("Draw! What a game! Good luck in the next one!");
     },
     checkWinCon() {
-      //console.log("checkWinCon here");
       if (this.computerIsHolding && this.playerIsHolding) {
-        if (
-          this.countPointsPlayer === this.countPointsComputer &&
-          this.countPointsComputer <= 20
-        ) {
+        if (this.countPointsPlayer === this.countPointsComputer) {
           this.draw();
         } else if (
-          this.countPointsComputer == 20 &&
-          this.countPointsComputer != this.countPointsPlayer
-        ) {
-          this.lose();
-        } else if (
-          this.countPointsComputer > this.countPointsPlayer &&
-          this.countPointsComputer <= 20
-        ) {
-          this.lose();
-        } else if (
-          this.countPointsComputer < this.countPointsPlayer &&
+          this.countPointsComputer > 20 &&
           this.countPointsPlayer <= 20
         ) {
           this.win();
-        } else if (this.playerIsHolding && this.countPointsComputer > 20) {
+        } else if (
+          this.countPointsPlayer > 20 &&
+          this.countPointsComputer <= 20
+        ) {
+          this.lose();
+        } else if (
+          this.countPointsPlayer > 20 &&
+          this.countPointsComputer > 20
+        ) {
+          this.draw();
+        } else if (this.countPointsComputer > this.countPointsPlayer) {
+          this.lose();
+        } else if (this.countPointsComputer < this.countPointsPlayer) {
           this.win();
         }
       } else if (this.countPointsComputer > 20) {
@@ -338,8 +336,18 @@ export default {
           this.computerIsHolding = true;
           document.getElementById("computer-log").innerText =
             "Atton is holding";
+          //---------------------- PLayer is Holding and AI is already better ---------------------
+        } else if (
+          this.playerIsHolding &&
+          this.countPointsComputer > this.countPointsPlayer &&
+          this.countPointsComputer <= 20
+        ) {
+          this.computerIsHolding = true;
+          document.getElementById("computer-log").innerText =
+            "Atton says Good Game! and holds.";
           //------------------------ More than 20 ----------------------------
         } else if (this.countPointsComputer > 20) {
+          console.log("MinusCheck here");
           this.computerHand.forEach((card, i) => {
             if (
               this.cardsMinus.indexOf(card) != -1 &&
@@ -424,61 +432,53 @@ export default {
           this.countPointsComputer < 20 &&
           this.countPointsComputer >= 10
         ) {
-          if (
-            this.playerIsHolding &&
-            this.countPointsComputer > this.countPointsPlayer
-          ) {
-            this.computerIsHolding = true;
-            document.getElementById("computer-log").innerText = "Atton: Nice!";
-          } else {
-            this.computerHand.forEach((card, i) => {
-              if (
-                this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer ==
-                  20 &&
-                !this.cardPLayed &&
-                this.cardsPlus.indexOf(card) !== -1
-              ) {
-                this.computerCardsOnBoard.push(card);
-                this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
-                //console.log(this.computerHand);
-                //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText =
-                  "Atton plays a +" +
-                  (this.cardsPlus.indexOf(card) + 1) +
-                  " and holds.";
-                this.computerHand.splice(i, 1);
-                this.computerIsHolding = true;
-                this.cardPlayed = true;
-              } else if (
-                this.cardsPlMi.indexOf(card) + 1 + this.countPointsComputer ==
-                  20 &&
-                !this.cardPlayed &&
-                this.cardsPlMi.indexOf(card) !== -1
-              ) {
-                this.computerCardsOnBoard.push(card);
-                this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
-                //console.log(this.computerHand);
-                //console.log(card, this.countPointsComputer);
-                document.getElementById("computer-log").innerText =
-                  "Atton plays a +/- " +
-                  (this.cardsPlMi.indexOf(card) + 1) +
-                  " as +" +
-                  (this.cardsPlMi.indexOf(card) + 1) +
-                  " and holds.";
-                this.computerHand.splice(i, 1);
-                this.computerIsHolding = true;
-                this.cardPlayed = true;
-              }
-            });
-            if (!this.cardPlayed) {
-              if (this.countPointsComputer >= 17) {
-                this.computerIsHolding = true;
-                document.getElementById("computer-log").innerText =
-                  "Atton is holding";
-              } else {
-                document.getElementById("computer-log").innerText =
-                  "Atton is passing";
-              }
+          this.computerHand.forEach((card, i) => {
+            if (
+              this.cardsPlus.indexOf(card) + 1 + this.countPointsComputer ==
+                20 &&
+              !this.cardPLayed &&
+              this.cardsPlus.indexOf(card) !== -1
+            ) {
+              this.computerCardsOnBoard.push(card);
+              this.countPointsComputer += this.cardsPlus.indexOf(card) + 1;
+              //console.log(this.computerHand);
+              //console.log(card, this.countPointsComputer);
+              document.getElementById("computer-log").innerText =
+                "Atton plays a +" +
+                (this.cardsPlus.indexOf(card) + 1) +
+                " and holds.";
+              this.computerHand.splice(i, 1);
+              this.computerIsHolding = true;
+              this.cardPlayed = true;
+            } else if (
+              this.cardsPlMi.indexOf(card) + 1 + this.countPointsComputer ==
+                20 &&
+              !this.cardPlayed &&
+              this.cardsPlMi.indexOf(card) !== -1
+            ) {
+              this.computerCardsOnBoard.push(card);
+              this.countPointsComputer += this.cardsPlMi.indexOf(card) + 1;
+              //console.log(this.computerHand);
+              //console.log(card, this.countPointsComputer);
+              document.getElementById("computer-log").innerText =
+                "Atton plays a +/- " +
+                (this.cardsPlMi.indexOf(card) + 1) +
+                " as +" +
+                (this.cardsPlMi.indexOf(card) + 1) +
+                " and holds.";
+              this.computerHand.splice(i, 1);
+              this.computerIsHolding = true;
+              this.cardPlayed = true;
+            }
+          });
+          if (!this.cardPlayed) {
+            if (this.countPointsComputer >= 18 && !this.playerIsHolding) {
+              this.computerIsHolding = true;
+              document.getElementById("computer-log").innerText =
+                "Atton is holding";
+            } else {
+              document.getElementById("computer-log").innerText =
+                "Atton is passing";
             }
           }
         } else {
@@ -534,30 +534,32 @@ export default {
       if (this.playerIsHolding) {
         setTimeout(() => {
           if (this.playerIsHolding) {
-            //console.log("round 1");
             this.computerTurn();
           }
           if (this.playerIsHolding) {
             setTimeout(() => {
               if (this.playerIsHolding) {
-                //console.log("round 2");
                 this.checkWinCon();
                 this.computerTurn();
               }
               if (this.playerIsHolding) {
                 setTimeout(() => {
                   if (this.playerIsHolding) {
-                    //console.log("round 3");
                     this.checkWinCon();
                     this.computerTurn();
                   }
                   if (this.playerIsHolding) {
                     setTimeout(() => {
-                      //console.log("round 4");
                       this.checkWinCon();
                       this.computerTurn();
-                      this.computerIsHolding = true;
-                      this.checkWinCon();
+                      if (this.playerIsHolding) {
+                        setTimeout(() => {
+                          this.checkWinCon();
+                          this.computerTurn();
+                          this.computerIsHolding = true;
+                          this.checkWinCon();
+                        }, 1000);
+                      }
                     }, 1000);
                   }
                 }, 1000);
