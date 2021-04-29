@@ -244,10 +244,11 @@ export default {
         this.$emit("game-over");
         swal
           .fire({
-            title: "You won the Match!",
-            text: "Incredible! You rock! Do you want to play again?",
+            title: "<h3 style='color: #ddd;'>You won the Match!</h3>",
+            text:
+              "<p style='color: #ddd;'>Incredible! You rock! Do you want to play again?</p>",
             width: "400px",
-            background: "#1b1b1b",
+            background: "#1b1b1b99",
             showConfirmButton: true,
             showCancelButton: true,
             cancelButtonText: "Maybe later",
@@ -263,11 +264,11 @@ export default {
         this.matchWinsPlayer = 0;
       } else {
         swal.fire({
-          title: "You won this game!",
+          title: "<h3 style='color: #ddd;'>You won this game!</h3>",
           text:
-            "You are playing best of threee tho, so keep your concentration up!",
+            "<p style='color: #ddd;'>You are playing best of threee tho, so keep your concentration up!</p>",
           width: "400px",
-          background: "#1b1b1b",
+          background: "#1b1b1b99",
           showConfirmButton: true,
           confirmButtonText: "Nice!"
         });
@@ -288,11 +289,11 @@ export default {
         document.getElementById("computer-log").innerText = "Atton: Good Game";
         swal
           .fire({
-            title: "You lost the Match!",
+            title: "<h3 style='color: #ddd;'>You lost the Match!</h3>",
             text:
-              "Don't be sad! It's a very high variance-based game. Just keep trying! Do you want to try again?",
+              "<p style='color: #ddd;'>Don't be sad! It's a very high variance-based game. Just keep trying! Do you want to try again?</p>",
             width: "400px",
-            background: "#1b1b1b",
+            background: "#1b1b1b99",
             showConfirmButton: true,
             showCancelButton: true,
             cancelButtonText: "Maybe later",
@@ -309,10 +310,11 @@ export default {
         this.matchWinsPlayer = 0;
       } else {
         swal.fire({
-          title: "You lost this game!",
-          text: "You are playing best of three tho, so don't give up just now!",
+          title: "<h3 style='color: #ddd;'>You lost this game!</h3>",
+          text:
+            "<p style='color: #ddd;'>You are playing best of three tho, so don't give up just now!</p>",
           width: "400px",
-          background: "#1b1b1b",
+          background: "#1b1b1b99",
           showConfirmButton: true,
           confirmButtonText: "Very well"
         });
@@ -329,10 +331,10 @@ export default {
       this.countPointsComputer = 0;
       document.getElementById("computer-log").innerText = "Atton: Good Game";
       swal.fire({
-        title: "Draw! What a game!",
-        text: "Good luck in the next one!",
+        title: "<h3 style='color: #ddd;'>Draw! What a game!</h3>",
+        text: "<p style='color: #ddd;'>Good luck in the next one!</p>",
         width: "400px",
-        background: "#1b1b1b",
+        background: "#1b1b1b99",
         showConfirmButton: true,
         confirmButtonText: "Next game!"
       });
@@ -631,16 +633,19 @@ export default {
         } else if (this.cardsPlMi.indexOf(this.playerHand[index]) !== -1) {
           swal
             .fire({
-              title: "<strong>This is a dualcard</strong>",
-              html: "<p>Wich side of the card do you want to play?</p>",
+              title: "<strong style='color: #ddd;'>This is a dualcard</strong>",
+              html:
+                "<p style='color: #ddd;'>Wich side of the card do you want to play?</p>",
               showCancelButton: true,
               focusConfirm: false,
-              confirmButtonText: 'Plus <i class="fas fa-plus"></i>',
-              cancelButtonText: 'Minus <i class="fas fa-minus"></i>',
+              confirmButtonText:
+                "Plus <i class='fas fa-plus' style='color: #ddd;'></i>",
+              cancelButtonText:
+                "Minus <i class='fas fa-minus' style='color: #ddd;'></i>",
               confirmButtonAriaLabel: "Yes",
               cancelButtonAriaLabel: "No",
               width: "400px",
-              background: "#1b1b1b"
+              background: "#1b1b1b99"
             })
             .then(result => {
               if (result.isConfirmed) {
