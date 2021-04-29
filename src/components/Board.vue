@@ -510,10 +510,10 @@ export default {
     nextRound() {
       if (this.isPlaying) {
         if (this.buttonDisabled) {
+          let gameCountToPreventPLayerTurnOnGameEnd = this.gameCount;
           this.buttonDisabled = false;
           this.checkWinCon();
           //console.log("nextRound here");
-          let gameCountToPreventPLayerTurnOnGameEnd = this.gameCount;
           if (this.computerIsHolding === false) {
             this.computerTurn();
           }
@@ -882,6 +882,74 @@ export default {
               //padding: 1rem 0;
               img {
                 max-width: 60px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 385px) {
+  #board-wrapper {
+    #table {
+      .player-board {
+        .board {
+          min-height: 100px;
+          .boardcards {
+            min-height: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 80px 80px 80px;
+            .card {
+              img {
+                max-width: 50px;
+              }
+            }
+          }
+        }
+        .player-hand {
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 80px 80px;
+            //justify-content: space-around;
+            .card {
+              //padding: 1rem 0;
+              img {
+                max-width: 50px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 320px) {
+  #board-wrapper {
+    #table {
+      .player-board {
+        .board {
+          min-height: 100px;
+          .boardcards {
+            min-height: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 70px 70px 70px;
+            .card {
+              img {
+                max-width: 40px;
+              }
+            }
+          }
+        }
+        .player-hand {
+          .handcards {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 70px 70px;
+            //justify-content: space-around;
+            .card {
+              //padding: 1rem 0;
+              img {
+                max-width: 40px;
               }
             }
           }

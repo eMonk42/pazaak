@@ -1,7 +1,7 @@
 <template>
   <div id="main-wrapper">
     <h1 class="greeting">Hi, let's play Pazaak!</h1>
-    <button v-if="!start" @click="play">Lets go!</button>
+    <button id="startGame" v-if="!start" @click="play">Lets go!</button>
     <button v-else @click="play">Stop Match</button>
     <p class="instructions-link">Learn how to play</p>
     <Board :isPlaying="start" @game-over="play" />
@@ -41,6 +41,9 @@ export default {
   button {
     display: block;
     margin: 0 auto;
+  }
+  #startGame {
+    border: 1px solid gold;
   }
 }
 @media (max-width: 1650px) {
