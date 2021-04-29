@@ -245,7 +245,7 @@ export default {
         swal
           .fire({
             title: "<h3 style='color: #ddd;'>You won the Match!</h3>",
-            text:
+            html:
               "<p style='color: #ddd;'>Incredible! You rock! Do you want to play again?</p>",
             width: "400px",
             background: "#1b1b1b99",
@@ -265,7 +265,7 @@ export default {
       } else {
         swal.fire({
           title: "<h3 style='color: #ddd;'>You won this game!</h3>",
-          text:
+          html:
             "<p style='color: #ddd;'>You are playing best of threee tho, so keep your concentration up!</p>",
           width: "400px",
           background: "#1b1b1b99",
@@ -290,7 +290,7 @@ export default {
         swal
           .fire({
             title: "<h3 style='color: #ddd;'>You lost the Match!</h3>",
-            text:
+            html:
               "<p style='color: #ddd;'>Don't be sad! It's a very high variance-based game. Just keep trying! Do you want to try again?</p>",
             width: "400px",
             background: "#1b1b1b99",
@@ -311,7 +311,7 @@ export default {
       } else {
         swal.fire({
           title: "<h3 style='color: #ddd;'>You lost this game!</h3>",
-          text:
+          html:
             "<p style='color: #ddd;'>You are playing best of three tho, so don't give up just now!</p>",
           width: "400px",
           background: "#1b1b1b99",
@@ -332,7 +332,7 @@ export default {
       document.getElementById("computer-log").innerText = "Atton: Good Game";
       swal.fire({
         title: "<h3 style='color: #ddd;'>Draw! What a game!</h3>",
-        text: "<p style='color: #ddd;'>Good luck in the next one!</p>",
+        html: "<p style='color: #ddd;'>Good luck in the next one!</p>",
         width: "400px",
         background: "#1b1b1b99",
         showConfirmButton: true,
