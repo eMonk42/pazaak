@@ -242,14 +242,34 @@ export default {
       if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
         document.getElementById("computer-log").innerText = "Atton: Good Game";
         this.$emit("game-over");
-        alert("You won the Match! \nIncredible! You rock!");
+        swal
+          .fire({
+            title: "You won the Match!",
+            text: "Incredible! You rock! Do you want to play again?",
+            width: "400px",
+            background: "#1b1b1b",
+            showConfirmButton: true,
+            showCancelButton: true,
+            cancelButtonText: "Maybe later",
+            confirmButtonText: "Absolutely!"
+          })
+          .then(res => {
+            if (res.isConfirmed) {
+              this.$emit("game-over");
+            }
+          });
         this.gameCount = 0;
         this.matchWinsComputer = 0;
         this.matchWinsPlayer = 0;
       } else {
-        alert(
-          "You won this game! \nWe are playing Bo3 tho, so keep your concentration up!"
-        );
+        swal.fire({
+          title: "You won this game!",
+          text: "We are playing Bo3 tho, so keep your concentration up!",
+          width: "400px",
+          background: "#1b1b1b",
+          showConfirmButton: true,
+          confirmButtonText: "Nice!"
+        });
       }
     },
     lose() {
@@ -265,16 +285,36 @@ export default {
       if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
         this.$emit("game-over");
         document.getElementById("computer-log").innerText = "Atton: Good Game";
-        alert(
-          "You lost the Match! \nDon't be sad! It's a very high variance-based one. Just keep trying!"
-        );
+        swal
+          .fire({
+            title: "You lost the Match!",
+            text:
+              "Don't be sad! It's a very high variance-based one. Just keep trying! Do you want to try again?",
+            width: "400px",
+            background: "#1b1b1b",
+            showConfirmButton: true,
+            showCancelButton: true,
+            cancelButtonText: "Maybe later",
+            confirmButtonText: "Absolutely!"
+          })
+          .then(res => {
+            if (res.isConfirmed) {
+              //this.isPlaying = true;
+              this.$emit("game-over");
+            }
+          });
         this.gameCount = 0;
         this.matchWinsComputer = 0;
         this.matchWinsPlayer = 0;
       } else {
-        alert(
-          "You lost this game! \nWe are playing Bo3 so don't give up just now!"
-        );
+        swal.fire({
+          title: "You lost this game!",
+          text: "We are playing Bo3 so don't give up just now!",
+          width: "400px",
+          background: "#1b1b1b",
+          showConfirmButton: true,
+          confirmButtonText: "Very well"
+        });
       }
     },
     draw() {
@@ -287,8 +327,14 @@ export default {
       this.countPointsPlayer = 0;
       this.countPointsComputer = 0;
       document.getElementById("computer-log").innerText = "Atton: Good Game";
-      //this.$emit("game-over");
-      alert("Draw! What a game! Good luck in the next one!");
+      swal.fire({
+        title: "Draw! What a game!",
+        text: "Good luck in the next one!",
+        width: "400px",
+        background: "#1b1b1b",
+        showConfirmButton: true,
+        confirmButtonText: "Next game!"
+      });
     },
     checkWinCon() {
       if (this.computerIsHolding && this.playerIsHolding) {
