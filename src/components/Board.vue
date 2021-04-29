@@ -88,12 +88,15 @@
     </div>
     <div id="controls">
       <div class="buttons">
-        <button @click="nextRound" :class="buttonDisabled ? '' : 'unclickable'">
+        <button
+          @click="nextRound"
+          :class="buttonDisabled && isPlaying ? 'clickable' : ''"
+        >
           Pass
         </button>
         <button
           @click="playerHolds"
-          :class="buttonDisabled ? '' : 'unclickable'"
+          :class="buttonDisabled && isPlaying ? 'clickable' : ''"
         >
           Hold
         </button>
@@ -510,10 +513,14 @@ export default {
           this.buttonDisabled = false;
           this.checkWinCon();
           //console.log("nextRound here");
+          let gameCountToPreventPLayerTurnOnGameEnd = this.gameCount;
           if (this.computerIsHolding === false) {
             this.computerTurn();
           }
-          if (this.playerIsHolding === false) {
+          if (
+            this.playerIsHolding === false &&
+            this.gameCount === gameCountToPreventPLayerTurnOnGameEnd
+          ) {
             this.playerTurn();
             //this.buttonDisabled = true;
           }

@@ -20,7 +20,7 @@ button {
   background-color: #444;
   color: #ddd;
   padding: 0.5rem 1rem;
-  border: 1px solid gold;
+  border: 1px solid #444;
   border-radius: 1rem;
 }
 
@@ -29,10 +29,10 @@ button:hover {
   cursor: pointer;
 }
 
-.unclickable {
-  border: 1px solid #555;
+.clickable {
+  border: 1px solid gold;
 }
 
-.unclickable:hover {
-  cursor: default;
+.clickable:hover {
+  cursor: pointer;
 }
