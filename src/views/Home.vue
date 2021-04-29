@@ -4,9 +4,7 @@
     <button id="startGame" v-if="!start" @click="play">Lets go!</button>
     <button v-else @click="play">Stop Match</button>
     <p class="instructions-link">
-      <a href="https://stoic-bose-ffa16d.netlify.app/about"
-        >Learn how to play</a
-      >
+      <a href="/about">Learn how to play</a>
     </p>
     <Board :isPlaying="start" @game-over="play" />
   </div>

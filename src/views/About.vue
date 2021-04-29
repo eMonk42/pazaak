@@ -74,7 +74,7 @@
         game-win-point.
       </p>
     </div>
-    <a href="https://stoic-bose-ffa16d.netlify.app/">Back</a>
+    <a href="/">Back</a>
   </div>
 </template>
 <script>
