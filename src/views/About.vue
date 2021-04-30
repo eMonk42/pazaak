@@ -49,7 +49,7 @@
         random cards and there only will be turn of the opponent left until the
         opponent holds too or gets above 20.
       </p>
-      <h4>Dualards</h4>
+      <h4>Dualcards</h4>
       <p>
         Dualcards are marked with a minus as well as a plus sign. When played
         the player has to deside which version of the card shall be entering the
