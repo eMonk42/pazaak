@@ -2,7 +2,7 @@
   <div id="board-wrapper">
     <!-- <h1>{{ isPlaying ? "true" : "false" }}</h1> -->
     <div id="score">
-      <p>Games played: {{ gameCount }}</p>
+      <p class="counts">Games played: {{ gameCount }}</p>
       <p>
         <span>{{ matchWinsPlayer }}</span
         >:<span>{{ matchWinsComputer }}</span>
@@ -239,9 +239,10 @@ export default {
       this.countPointsComputer = 0;
       this.playerCardsOnBoard = [];
       this.computerCardsOnBoard = [];
-      if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
+      if (this.matchWinsPlayer == 2) {
         document.getElementById("computer-log").innerText = "Atton: Good Game";
         this.$emit("game-over");
+        this.$emit("player-win");
         swal
           .fire({
             title: "<h3 style='color: #ddd;'>You won the Match!</h3>",
@@ -284,9 +285,10 @@ export default {
       this.countPointsComputer = 0;
       this.playerCardsOnBoard = [];
       this.computerCardsOnBoard = [];
-      if (this.matchWinsPlayer == 2 || this.matchWinsComputer == 2) {
+      if (this.matchWinsComputer == 2) {
         this.$emit("game-over");
         document.getElementById("computer-log").innerText = "Atton: Good Game";
+        this.$emit("computer-win");
         swal
           .fire({
             title: "<h3 style='color: #ddd;'>You lost the Match!</h3>",
@@ -396,7 +398,7 @@ export default {
             "Atton says Good Game! and holds.";
           //------------------------ More than 20 ----------------------------
         } else if (this.countPointsComputer > 20) {
-          console.log("MinusCheck here");
+          //console.log("MinusCheck here");
           this.computerHand.forEach((card, i) => {
             if (
               this.cardsMinus.indexOf(card) != -1 &&
@@ -705,8 +707,8 @@ export default {
   width: 100%;
   #score {
     border: 1px solid #444;
-    justify-self: center;
-    align-self: center;
+    //justify-self: center;
+    //align-self: center;
     //border: 1px solid gold;
     display: flex;
     flex-direction: row;
@@ -714,6 +716,11 @@ export default {
     width: 100%;
     padding: 0.5rem 0;
     background-color: #1a1a1a;
+    .counts {
+      display: flex;
+      justify-content: space-evenly;
+      //border: 1px solid magenta;
+    }
   }
   #controls {
     display: flex;
